@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Have a go at developing cloud native microservices on a fully open source and open standards stack. Use the MicroProfile programming model to develop robust, fault-tolerant and flexible microservices, deploy them to the Open Liberty appserver running on Open J9, handle metrics and alerting with MicroProfile Metrics and Health.
+Have a go at developing a cloud-native microservice on a fully open source and open standards stack. Use the Eclipse MicroProfile programming model to develop a robust and flexible microservice. Deploy it to the Open Liberty server running on the Eclipse OpenJ9 JVM.  Handle microservice metrics and alerting with MicroProfile Metrics and Health.  Finally, build and run the application in a Docker container ready for deployment to your favourite cloud.
 
 ### Pre-requisites
 
