@@ -1,4 +1,4 @@
-# Get Started with cloud-native on the open Java stack 
+# Get started with cloud-native on the open Java stack 
 
 ## Abstract
 
