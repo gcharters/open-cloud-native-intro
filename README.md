@@ -37,7 +37,7 @@ OMR      - f410d65
 JCL      - 687ce89 based on jdk8u152-b16)
 ```
 
-### 2. Create a cloud-native microservice 
+### 2. Build a cloud-native microservice 
 
 a. This tutorial comes with a pre-build Microservice for you to study and extend.  Start by cloning the repository.
 
