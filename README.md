@@ -93,7 +93,7 @@ Open the health endpoint in a browser and you should see:
 }
 ```
 
-A MicroProfile health for this application has an overall "outcome" which is determined by the outcome of any available individual health "checks".  If any of those checks are "DOWN" then the overall outcome is considered to be "DOWN".
+The MicroProfile health for this application has an overall "outcome" which is determined by the outcome of any available individual health "checks".  If any of those checks are "DOWN" then the overall outcome is considered to be "DOWN".
 
 As well as returning a JSON description of the health outcome, the health endpoint also reflects the outcome in the http response code.  An outcome of "UP" returns a 200 OK, whereas an outcome of "DOWN" returns a 503 Service Unavailable.  This means the endpoint can be hooked up to Kubernetes liveness or readiness probes to reflect the service availability.
 
