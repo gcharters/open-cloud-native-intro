@@ -23,12 +23,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import javax.inject.Inject;
 import javax.enterprise.context.RequestScoped;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Path("/hello")
 @RequestScoped
 public class GreetingService {
+
+    @Inject
+    @ConfigProperty(name="greetingservice.greeting", defaultValue = "Hello")
+    private String greetingStr;
 
     @GET
     @Path("/{name}")
@@ -36,7 +42,7 @@ public class GreetingService {
     @Timed(name = "sayHelloTime", displayName = "Call duration", description = "Time spent in call")
     public Response sayHello(@PathParam("name") String name) {
 
-        Greeting greeting = new Greeting("Hello", name);
+        Greeting greeting = new Greeting(greetingStr, name);
         return Response.ok(greeting).build();
     }
 
