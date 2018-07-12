@@ -33,7 +33,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class GreetingService {
 
     @Inject
-    @ConfigProperty(name="greetingservice.greeting", defaultValue = "Hello")
+    @ConfigProperty(name="greetingServiceGreeting", defaultValue = "Hello")
     private String greetingStr;
 
     @GET

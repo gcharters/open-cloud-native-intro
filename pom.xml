@@ -89,7 +89,7 @@
                     <bootstrapProperties>
                         <default.http.port>${testServerHttpPort}</default.http.port>
                         <default.https.port>${testServerHttpsPort}</default.https.port>
-                        <greetingservice.greeting>Hello</greetingservice.greeting>
+                        <greetingServiceGreeting>Hello</greetingServiceGreeting>
                     </bootstrapProperties>
                 </configuration>
             </plugin>
