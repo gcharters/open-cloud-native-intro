@@ -135,7 +135,7 @@ Uncomment this section and save:
     <keyStore id="defaultKeyStore" password="${keystore.password}"/>   
 ```
 
-Rebuild and start the server: `mvn install liberty:run-server`
+Rebuild and start the server: `mvn clean install liberty:run-server`
 
 Now when you access the metrics endpoint you should be asked to add an exception for the Open Liberty generated self-signed certificate and also requested to then sign in.  Use the admin user (`admin`) and password (`change_it`) from the `server.xml` shown above.
 
@@ -180,7 +180,7 @@ The `@Timed` annotation is an example of one of a number of MicroProfile metric 
 
 Access the service endpoint to cause some application measurements to be recorded: <a href="http://localhost:9080/mpservice/greeting/hello/John%20Doe">http://localhost:9080/mpservice/greeting/hello/John%20Doe</a>.
 
-These measurement will be available at the `/metrics` endpoint, but you can also just see the applications metrics at: <a href="https://localhost9443/metrics/application">https://localhost9443/metrics/application</a>.
+These measurement will be available at the `/metrics` endpoint, but you can also just see the applications metrics at: <a href="https://localhost:9443/metrics/application">https://localhost:9443/metrics/application</a>.
 
 c. Externalizing configuration is one of the key tenets of <a href="https://12factor.net/">12-factor applications</a>. Externalizing everything that varies between deployments into configuration means you can build once and deploy in the many stages of your DEvOps pipeline, thus removing the risk of your application changing between deployments and invalidating previous testing.  
 
@@ -201,7 +201,7 @@ The maven build puts this value in: `target/ilberty/wlp/usr/servers/mpserviceSer
 greetingServiceGreeting=Hello
 ```
 
-This file is read at server startup and the value injeted into the GreetingService bean when it is created.
+This file is read at server startup and the value injected into the GreetingService bean when it is created.
 
 Edit the pom.xml file and change the greeting to `Bonjour`
 
@@ -224,7 +224,7 @@ You should now see:
 }
 ```
 
-This example shows static config injection, where the configuration is read at server start-up.  MicroProfile and Open Liberty also support dynamic configuration injection which means the configuration is re-read periodically (e.g. very 500ms) and so does not require a server restart.
+This example shows static config injection, where the configuration is read at server start-up.  MicroProfile and Open Liberty also support dynamic configuration injection which means the configuration is re-read periodically (e.g. every 500ms) and so does not require a server restart.
 
 MicroProfile has many other important capabilities, such as a type-safe REST client, and fault tolerance (the ability to gracefully handle failures in service dependencies).  Visit the <a href="https://openliberty.io/guides/?search=MicroProfile&key=tag">Open Liberty MicroProfile Guides</a> for more details and deeper dives into what we've covered here.
 
