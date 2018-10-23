@@ -1,5 +1,7 @@
 FROM open-liberty as server-setup
 COPY /target/mpservice.zip /config/
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip
 RUN unzip /config/mpservice.zip && \
     mv /wlp/usr/servers/mpserviceServer/* /config/ && \
     rm -rf /config/wlp && \
