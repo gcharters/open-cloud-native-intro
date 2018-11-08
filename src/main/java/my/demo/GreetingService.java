@@ -28,6 +28,7 @@ import javax.enterprise.context.RequestScoped;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+
 @Path("/hello")
 @RequestScoped
 public class GreetingService {
@@ -39,11 +40,10 @@ public class GreetingService {
     @GET
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Timed(name = "sayHelloTime", displayName = "Call duration", description = "Time spent in call")
-    public Response sayHello(@PathParam("name") String name) {
-
-        Greeting greeting = new Greeting(greetingStr, name);
-        return Response.ok(greeting).build();
+    @Timed(name = "sayHelloTime", displayName = "Call duration", 
+           description = "Time spent in call")
+    public Greeting sayHello(@PathParam("name") String name) {
+        return new Greeting(greetingStr, name);
     }
 
 }

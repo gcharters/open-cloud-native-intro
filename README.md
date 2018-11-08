@@ -76,6 +76,8 @@ The response should look like:
 
 The tutorial code shows example use of MicroProfile Health and Metrics.  
 
+#### MicroProfile Health
+
 a. When you started Open Liberty, it wrote out a number of available endpoints.  One of those is the health endpoint for the application: <a href="http://localhost:9080/health/">http://localhost:9080/health/</a>.
 
 Open the health endpoint in a browser and you should see:
@@ -118,6 +120,8 @@ public class GreetingHealth implements HealthCheck {
 ```
 
 A health check will typically check the availability of resources the service requires in order to correctly function (e.g. services it depends on, database connections, etc).  The tutorial application has a simple example health check which just returns true because this service does not have any other dependencies.
+
+#### MicroProfile Metrics
 
 b. When you started Open Liberty it wrote out an endpoint for MicroProfile Metrics: <a href="http://localhost:9080/metrics/">http://localhost:9080/metrics/</a>. If you tried to access the endpoint you will have found that it requires security configuration to work.  The Metrics endpoint is only available over https and also requires an authorized user in order to prevent disclosing potentially sensitive information.
 
@@ -166,11 +170,10 @@ public class GreetingService {
     @GET
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Timed(name = "sayHelloTime", displayName = "Call duration", description = "Time spent in call")
-    public Response sayHello(@PathParam("name") String name) {
-
-        Greeting greeting = new Greeting(greetingStr, name);
-        return Response.ok(greeting).build();
+    @Timed(name = "sayHelloTime", displayName = "Call duration", 
+           description = "Time spent in call")
+    public Greeting sayHello(@PathParam("name") String name) {
+        return new Greeting(greetingStr, name);
     }
 
 }
@@ -225,6 +228,99 @@ You should now see:
 ```
 
 This example shows static config injection, where the configuration is read at server start-up.  MicroProfile and Open Liberty also support dynamic configuration injection which means the configuration is re-read periodically (e.g. every 500ms) and so does not require a server restart.
+
+#### MicroProfile OpenAPI
+
+d. When you started Open Liberty it wrote out two endpoints for MicroProfile OpenAPI: <a href="http://localhost:9080/openapi/">http://localhost:9080/openapi/</a> and <a href="http://localhost:9080/openapi/ui/">http://localhost:9080/openapi/ui/</a>.  Clicking on the first link displays a machine-readable yaml description of the service, the format of which is defined by the <a href="https://www.openapis.org/">OpenAPI Initiative</a>.  
+
+```YAML
+openapi: 3.0.0
+info:
+  title: Deployed APIs
+  version: 1.0.0
+servers:
+- url: http://localhost:9080/mpservice
+- url: https://localhost:9443/mpservice
+paths:
+  /greeting/hello/{name}:
+    get:
+      operationId: sayHello
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
+components:
+  schemas:
+    Greeting:
+      type: object
+      properties:
+        message:
+          type: string
+        name:
+          type: string
+```
+
+This yaml form of the API can be used by API Gateways or generators for clients to work with your service - for example, to generate client code to call your service.  A number of generators are available for a variety of languages.
+
+The second link is to a web page that gives a human-readable representation of the API and also allows you to browse and call the API.  
+
+The machine-readable and Web page API descriptions are created automatically from the JAX-RS definition with no additional work required.  As a result, the information provided for your service is pretty basic.  One of the things MicroProfile OpenAPI provides is a number of annotations to enable you to provide better API documentation.
+
+Edit the `src/main/java/my/demo/GreetingService.java` to add documentation for the operation using the @Operation annotation:
+
+```Java
+   ...
+    @GET
+    @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Timed(name = "sayHelloTime", displayName = "Call duration", 
+           description = "Time spent in call")
+    @Operation(
+        summary = "Get a greeting",
+        description = "Returns a greeting for the provided name.")
+    public Greeting sayHello(@PathParam("name") String name) {
+        return new Greeting(greetingStr, name);
+    }
+    ...
+```
+
+You'll also need to add the package import for the annotation:
+
+```Java
+import org.eclipse.microprofile.openapi.annotations.Operation;
+```
+
+If your service is not running and your IDE does not automatically recompile the class, re-run your build and start the server:
+
+`mvn compile liberty:run-server`
+
+Browse the OpenAPI endpoint <a href="http://localhost:9080/openapi/">http://localhost:9080/openapi/</a>
+
+You'll see that your API now has additional documentation:
+
+```yaml
+...
+  /greeting/hello/{name}:
+    get:
+      summary: Get a greeting
+      description: Returns a greeting for the provided name.
+      operationId: sayHello
+      parameters:
+...
+```
+
+There are additional annotations available to help you document the parameters and more.
+
+#### Further Reading
 
 MicroProfile has many other important capabilities, such as a type-safe REST client, and fault tolerance (the ability to gracefully handle failures in service dependencies).  Visit the <a href="https://openliberty.io/guides/?search=MicroProfile&key=tag">Open Liberty MicroProfile Guides</a> for more details and deeper dives into what we've covered here.
 
