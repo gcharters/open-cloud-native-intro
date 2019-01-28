@@ -336,7 +336,7 @@ By default the `pom.xml` builds a 'fat jar': `target/mpservice.jar` so we need t
 
 The project's maven pom file includes a maven profile for building a usr package, which isn't built by default.  Build the usr server package with: `mvn -P usr-package install`
 
-This results in a server zip package: `target/mpservice.zip`
+This results in a server zip package: `target/mpservice.tar.gz`.  The `.tar.gz` format was chosen because in a Docker build the `ADD` command will automatically unzip & untar it for us into the right location.  In the `usr-package` build we also use the name `defaultServer` for the server because this is the name of the server the base Liberty Docker images automatically runs when the container is started.
 
 b. Build and run in Docker
 
