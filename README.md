@@ -7,7 +7,7 @@ Have a go at developing a cloud-native microservice on a fully open source and o
 ### Pre-requisites
 
 To take this quick tutorial you need the following pre-requisites:
-1. A Java 8 JDK (the tutorial covers OpenJ9 but other Java distributions should work https://adoptopenjdk.net/?variant=openjdk8-openj9)
+1. A Java 8 JDK (the tutorial covers OpenJ9 but other Java distributions should work https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=openj9)
 2. Apache Maven (https://maven.apache.org/)
 3. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
 4. Docker (if you want to do the steps to build and run in a Docker container)
