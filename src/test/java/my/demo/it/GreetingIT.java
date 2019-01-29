@@ -32,7 +32,6 @@ public class GreetingIT {
         String port = System.getProperty("liberty.test.port");
         URL = "http://localhost:" + port + "/mpservice/greeting/hello/JDoe";
     }
-/*
     @Test
     public void testService() throws Exception {
 
@@ -61,5 +60,5 @@ public class GreetingIT {
         } finally {
             response.close();
         }
-    }*/
+    }
 }
