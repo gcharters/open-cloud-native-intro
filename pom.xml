@@ -32,7 +32,7 @@
             <id>usr-package</id>
             <properties>
                 <packaging.type>usr</packaging.type>
-                <package.file>mpservice.tar.gz</package.file>
+                <package.file>defaultServer.zip</package.file>
                 <server.name>default</server.name>
             </properties>
         </profile>
