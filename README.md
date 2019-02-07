@@ -39,7 +39,7 @@ JCL      - 687ce89 based on jdk8u152-b16)
 
 ### 2. Build a cloud-native microservice 
 
-a. This tutorial comes with a pre-build Microservice for you to study and extend.  Start by cloning the repository.
+This tutorial comes with a pre-build Microservice for you to study and extend.  Start by cloning the repository.
 
 ``` 
 git clone https://github.com/gcharters/open-cloud-native-intro.git
@@ -47,15 +47,15 @@ git clone https://github.com/gcharters/open-cloud-native-intro.git
 
 Inside the `open-cloud-native-intro` directory you'll see a `pom.xml` file for the maven build, a `Dockerfile` to build a docker image and a `src` directory containing the implementation.
 
-b. Compile and run the microservice application
+Build and run the microservice application:
 
-`mvn install liberty:run-server`
+`mvn install liberty:run`
 
-Building the application (`mvn install`) also downloads Open Liberty from Maven Central and installs it to `target/liberty`.  The build also packages the application in the `target` directory in a WAR file, called `mpservice.war` and creates a minimal runnable jar containing Open Liberty and the application, called `mpservice.jar`. The `liberty:run-server` command (Maven goal) starts the `mpserviceServer` server in the `target/liberty` directory.
+Building the application (`mvn install`) also downloads Open Liberty from Maven Central and installs it to `target/liberty`.  The build also packages the application in the `target` directory in a WAR file, called `mpservice.war` and creates a minimal runnable jar containing Open Liberty and the application, called `mpservice.jar`. The `liberty:run` command (Maven goal) starts the `mpserviceServer` server in the `target/liberty` directory.
 
 Note: you will see some warnings from the server relating to SSL configuration.  These are expected and will be addressed later.
 
-c. To see what the app does, open a web browser at the following URL: 
+To see what the app does, open a web browser at the following URL: 
 <a href="http://localhost:9080/mpservice">http://localhost:9080/mpservice</a>
 
 This displays a simple web page that provides a link to the microservice.  On that page, click on the link to the greeting service.  This will call the microservice URL: 
@@ -78,7 +78,7 @@ The tutorial code shows example use of MicroProfile Health and Metrics.
 
 #### MicroProfile Health
 
-a. When you started Open Liberty, it wrote out a number of available endpoints.  One of those is the health endpoint for the application: <a href="http://localhost:9080/health/">http://localhost:9080/health/</a>.
+When you started Open Liberty, it wrote out a number of available endpoints.  One of those is the health endpoint for the application: <a href="http://localhost:9080/health/">http://localhost:9080/health/</a>.
 
 Open the health endpoint in a browser and you should see:
 
@@ -123,25 +123,19 @@ A health check will typically check the availability of resources the service re
 
 #### MicroProfile Metrics
 
-b. When you started Open Liberty it wrote out an endpoint for MicroProfile Metrics: <a href="http://localhost:9080/metrics/">http://localhost:9080/metrics/</a>. If you tried to access the endpoint you will have found that it requires security configuration to work.  The Metrics endpoint is only available over https and also requires an authorized user in order to prevent disclosing potentially sensitive information.
+When you started Open Liberty it wrote out an endpoint for MicroProfile Metrics: <a href="http://localhost:9080/metrics/">http://localhost:9080/metrics/</a>. If you tried to access the endpoint you will have found that it requires security configuration to work.  The Metrics endpoint is only available over https and, by default, also requires an authorized user in order to prevent disclosing potentially sensitive information.
 
-Edit the source server configuration: `src/main/liberty/config/server.xml`
+The MicroProfile Metrics feature allows you to turn off the security requirements.  This makes it easier to test out Metrics, but is not intended for production systems.
 
-Note, this server configuration is for demo purposes.  It's not secure and must not be used in production deployments.  
-
-Uncomment this section and save:
+Edit the source server configuration: `src/main/liberty/config/server.xml` and add the following line:
 
 ```XML
-    <variable name="admin.password" value="change_it" />
-    <variable name="keystore.password" value="change_it" />
-    
-    <quickStartSecurity userName="admin" userPassword="${admin.password}"/>
-    <keyStore id="defaultKeyStore" password="${keystore.password}"/>   
+    <mpMetrics authentication="false" /> 
 ```
 
-Rebuild and start the server: `mvn clean install liberty:run-server`
+Rebuild and start the server: `mvn package liberty:run`
 
-Now when you access the metrics endpoint you should be asked to add an exception for the Open Liberty generated self-signed certificate and also requested to then sign in.  Use the admin user (`admin`) and password (`change_it`) from the `server.xml` shown above.
+Now when you access the metrics endpoint you will be able to access it over http and not be asked to authenticate.
 
 You should now see metrics data like this:
 
@@ -185,7 +179,9 @@ Access the service endpoint to cause some application measurements to be recorde
 
 These measurement will be available at the `/metrics` endpoint, but you can also just see the applications metrics at: <a href="https://localhost:9443/metrics/application">https://localhost:9443/metrics/application</a>.
 
-c. Externalizing configuration is one of the key tenets of <a href="https://12factor.net/">12-factor applications</a>. Externalizing everything that varies between deployments into configuration means you can build once and deploy in the many stages of your DEvOps pipeline, thus removing the risk of your application changing between deployments and invalidating previous testing.  
+### MicroProfile Config
+
+Externalizing configuration is one of the key tenets of <a href="https://12factor.net/">12-factor applications</a>. Externalizing everything that varies between deployments into configuration means you can build once and deploy in the many stages of your DEvOps pipeline, thus removing the risk of your application changing between deployments and invalidating previous testing.  
 
 The tutorial application has also included the use of MicroProfile Config for injecting a configuration property using `@ConfigProperty`.  Open Liberty supports a number of `config sources`.  The tutorial shows the use of Open Liberty `bootstrap.properties`.  
 
@@ -214,7 +210,7 @@ Edit the pom.xml file and change the greeting to `Bonjour`
     <greetingServiceGreeting>Bonjour</greetingServiceGreeting>
 </bootstrapProperties>
 ```
-Stop the server (e.g. `Ctrl-C`) and start it again: `mvn liberty:run-server`.  
+Stop the server (e.g. `Ctrl-C`) and start it again: `mvn liberty:run`.  
 
 Call the service again to see the greeting change: <a href="http://localhost:9080/mpservice/greeting/hello/John%20Doe">http://localhost:9080/mpservice/greeting/hello/John%20Doe</a>
 
@@ -231,7 +227,7 @@ This example shows static config injection, where the configuration is read at s
 
 #### MicroProfile OpenAPI
 
-d. When you started Open Liberty it wrote out two endpoints for MicroProfile OpenAPI: <a href="http://localhost:9080/openapi/">http://localhost:9080/openapi/</a> and <a href="http://localhost:9080/openapi/ui/">http://localhost:9080/openapi/ui/</a>.  Clicking on the first link displays a machine-readable yaml description of the service, the format of which is defined by the <a href="https://www.openapis.org/">OpenAPI Initiative</a>.  
+When you started Open Liberty it wrote out two endpoints for MicroProfile OpenAPI: <a href="http://localhost:9080/openapi/">http://localhost:9080/openapi/</a> and <a href="http://localhost:9080/openapi/ui/">http://localhost:9080/openapi/ui/</a>.  Clicking on the first link displays a machine-readable yaml description of the service, the format of which is defined by the <a href="https://www.openapis.org/">OpenAPI Initiative</a>.  
 
 ```YAML
 openapi: 3.0.0
@@ -301,7 +297,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 
 If your service is not running and your IDE does not automatically recompile the class, re-run your build and start the server:
 
-`mvn compile liberty:run-server`
+`mvn compile liberty:run`
 
 Browse the OpenAPI endpoint <a href="http://localhost:9080/openapi/">http://localhost:9080/openapi/</a>
 
@@ -330,7 +326,7 @@ Docker has rapidly become the containerization technology of choice for deployin
 
 The tutorial includes a Dockerfile for building a docker image for the Microservice.  This Dockerfile is based on the Open Liberty docker image from Docker Hub and adds in the project's server configuration and application from an Open Liberty 'usr server package'.  A usr server package only contains an application and server configuration and is designed to be unzipped over an existing Open Liberty installation (such as the one on the Liberty Docker image).  The advantage of this approach over putting a 'fat jar' (an option supported by Liberty as well as Spring Boot) which contains a lot of infrastructure code, in a docker container, is Docker will cache the pre-req infrastructure layers (e.g. Open Liberty, Java, etc) which makes building and deploying much faster.
 
-a. Build a usr server package
+#### Build a usr server package
 
 By default the `pom.xml` builds a 'fat jar': `target/mpservice.jar` so we need to build a different package that only includes the server configuration and application (not the server runtime) - a `usr` server package.
 
@@ -338,11 +334,11 @@ The project's maven pom file includes a maven profile for building a usr package
 
 This results in a server zip package: `target/defaultServer.zip`.  In the `usr-package` build we also use the name `defaultServer` for the server because this is the name of the server the base Liberty Docker images automatically runs when the container is started.
 
-b. Build and run in Docker
+#### Build and run in Docker
 
 In the directory where the `Dockerfile` is located run: `docker build -t my-demo:mpservice .`
 
-If the server is already running, stop it: `mvn liberty:stop-server` or `Ctrl-C`
+If the server is already running, stop it: `mvn liberty:stop` or `Ctrl-C`
 
 Run the docker image: `docker run -p 9080:9080 -p 9443:9443 my-demo:mpservice`
 
