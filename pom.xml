@@ -85,7 +85,7 @@
                     <assemblyArtifact>
                         <groupId>io.openliberty</groupId>
                         <artifactId>openliberty-runtime</artifactId>
-                        <version>[18.0.0.3,)</version>
+                        <version>[18.0.0.3,19.0.0.8]</version>
                         <type>zip</type>
                     </assemblyArtifact>
                     <serverName>${server.name}Server</serverName>
