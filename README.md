@@ -210,7 +210,9 @@ Edit the pom.xml file and change the greeting to `Bonjour`
     <greetingServiceGreeting>Bonjour</greetingServiceGreeting>
 </bootstrapProperties>
 ```
-Stop the server (e.g. `Ctrl-C`) and start it again: `mvn liberty:run`.  
+Stop the server (e.g. `Ctrl-C`) and start it again: `mvn liberty:run`.
+
+*Note: if you trigger a rebuild, the integration test will fail as it's expecting the response message to be "Hello". However, the server will still build and run.*
 
 Call the service again to see the greeting change: <a href="http://localhost:9080/mpservice/greeting/hello/John%20Doe">http://localhost:9080/mpservice/greeting/hello/John%20Doe</a>
 
