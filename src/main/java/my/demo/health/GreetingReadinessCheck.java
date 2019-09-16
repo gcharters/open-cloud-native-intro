@@ -17,15 +17,15 @@ package my.demo.health;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.health.Health;
+import org.eclipse.microprofile.health.Readiness;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
-@Health
+@Readiness
 @ApplicationScoped
-public class GreetingHealth implements HealthCheck {
+public class GreetingReadinessCheck implements HealthCheck {
 
-    public boolean isHealthy() {
+    public boolean isReady() {
 
         // Check the health of dependencies here
 
@@ -35,7 +35,7 @@ public class GreetingHealth implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
-        boolean up = isHealthy();
-        return HealthCheckResponse.named("GreetingService").state(up).build();
+        boolean up = isReady();
+        return HealthCheckResponse.named("GreetingServiceReadiness").state(up).build();
     }
 }

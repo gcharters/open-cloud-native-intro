@@ -84,14 +84,16 @@ Open the health endpoint in a browser and you should see:
 
 ```JSON
 {
-    "checks": [
-        {
-            "data": { },
-            "name": "GreetingService",
-            "state": "UP"
-        }
-    ],
-    "outcome": "UP"
+  "checks": [
+    {
+      "data": {
+        
+      },
+      "name": "GreetingServiceReadiness",
+      "status": "UP"
+    }
+  ],
+  "status": "UP"
 }
 ```
 
@@ -99,27 +101,43 @@ The MicroProfile health for this application has an overall "outcome" which is d
 
 As well as returning a JSON description of the health outcome, the health endpoint also reflects the outcome in the http response code.  An outcome of "UP" returns a 200 OK, whereas an outcome of "DOWN" returns a 503 Service Unavailable.  This means the endpoint can be hooked up to Kubernetes liveness or readiness probes to reflect the service availability.
 
-The tutorial application health has one "check".  This is implemented in `src/main/java/my/demo/health/GreetingHealth.java`, the main code of which looks like:
+The tutorial application health has one "check".  This is implemented in `src/main/java/my/demo/health/GreetingReadinessCheck.java`, the main code of which looks like:
 
 ```Java
-@Health
+@Readiness
 @ApplicationScoped
-public class GreetingHealth implements HealthCheck {
+public class GreetingReadinessCheck implements HealthCheck {
 
-    public boolean isHealthy() {
+    public boolean isReady() {
+
         // Check the health of dependencies here
+
         return true;
+
     }
 
     @Override
     public HealthCheckResponse call() {
-        boolean up = isHealthy();
-        return HealthCheckResponse.named("GreetingService").state(up).build();
+        boolean up = isReady();
+        return HealthCheckResponse.named("GreetingServiceReadiness").state(up).build();
     }
 }
 ```
 
-A health check will typically check the availability of resources the service requires in order to correctly function (e.g. services it depends on, database connections, etc).  The tutorial application has a simple example health check which just returns true because this service does not have any other dependencies.
+MicroProfile supports two types of health checks: readiness and liveness.  These match the health checks supported by deployment environments like Kubernetes and, indeed, the MicroProfile Health APIs have been designed to integrate perfectly and Kubernetes liveness and readiness probes.
+
+A readiness check will typically check the availability of resources the service requires in order to correctly function (e.g. services it depends on, database connections, etc).  The tutorial application has a simple example readiness check which just returns true because this service does not have any other dependencies.
+
+You can implement many checks as part of your service and their outcomes are aggregated at the `/health/ready` endpoint.  Liveness checks are aggregated at `/health/live` and all checks are aggregated at `/health`.
+
+Feel free to try each of these endpoints.  You'll see there's a default `/health/live` endpoint that always reports as `UP`.
+
+http://localhost:9080/health/ready
+
+http://localhost:9080/health/live
+
+http://localhost:9080/health
+
 
 #### MicroProfile Metrics
 
